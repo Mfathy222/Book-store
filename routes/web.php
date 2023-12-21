@@ -83,6 +83,7 @@ Route::get('categories/create', [CategoryController::class, 'create']);
 //store or post
 Route::post('categories', [CategoryController::class, 'store']);
 //update
+//
 Route::get('categories/edit/{id}',[CategoryController::class,'edit'] );
 Route::put('categories/{id}', [CategoryController::class,'update'] );
 //delete

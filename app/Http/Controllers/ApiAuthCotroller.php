@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 
-use Hash;
+// use Hash;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 
@@ -68,15 +69,15 @@ class ApiAuthCotroller extends Controller
             $passwordCheck = hash::check($request->password, $user->password);
 
             if ($passwordCheck) {
-                $access_token = Str::random(64);
+                $userToken = Str::random(64);
                 $user->update([
-                    "access_token" => $access_token
+                    "userToken" => $userToken
                 ]);
 
 
                 return response()->json([
-                    "msg" => 'welcome ',
-                    "access_token" => $access_token
+                    "message" => 'true',
+                    "userToken" => $userToken
 
                 ], 201);
 

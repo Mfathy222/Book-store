@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-
+use App\Repositories\Interfaces\BlogRepositoryInterface;
 
 
 class CategoryController extends Controller
@@ -17,24 +17,45 @@ class CategoryController extends Controller
         // paginatation
         //1-all or get -> paginate()
         //2- page all $category->links()
+        //Category دا اسم الموديل
+        //$categories بيحتوى علي كل العواميد الي في الموديل
+        //paginate دا كلاس بيعمل بجينات ونحدد معاه يعرض اد ايه
         $categories = Category::paginate(2);
 
 
         //view
+        //categories.all اسم الصفحه الموجود في فولدر
+        //compact("هنا اسم المتغير الي فيه الداتا")
         return view("categories.all", compact("categories"));
     }
-    //show
-    public function show($id)
+
+
+    private $blogRepository;
+
+    public function __construct(BlogRepositoryInterface $blogRepository)
     {
-        $category = Category::findorfail($id);
-        return view("categories.show", compact("category"));
+        $this->blogRepository = $blogRepository;
     }
+    public function show($id){
+         //هنا بنكلم الموديل بنقوله اوجد لي ال id وحطه في متغير
+        //  $category = Category::findorfail($id);
+
+        //  //هنا بعتنا المتغير فيىه compact علشان نعرضها في صفحه الshow
+        //  return view("categories.show", compact("category"));
+    }
+
+
     //create
     public function create()
     {
         return view('categories.create');
     }
     //store or post
+// Request بتبقي شايله كل الداتا الي انا دخلتها في الفورم علشان امسك الداتا
+//$request كده اخدنا منه object
+//هاعمل عليه فالديشن واحفظه في متغير$data
+//لو الفالديشن تمام هاخزن في الcategory model
+// وهارجع علي الرئيسيه
     public function store(Request $request)
     {
 
@@ -57,10 +78,6 @@ class CategoryController extends Controller
         //store
         Category::create(
             $data
-            //     [
-            //     "title" => $request->title,
-            //     "desc" => $request->desc,
-            // ]
         );
 
         session()->flash("success", "date insertd successfuly");
@@ -74,9 +91,9 @@ class CategoryController extends Controller
     //update or edit
     public function edit($id)
     {
-
+//هنا محتاج الداتا الي موجوده فاهبعتا كده
         $category = Category::findorfail($id);
-
+//كده هاروح لصفحه الايديت ومعاها الداتا في المتغير
         return view('categories.edit', ["category" => $category]);
     }
     //update
@@ -119,7 +136,7 @@ class CategoryController extends Controller
         $category->delete();
         session()->flash("success", "data deleted successfuly");
         return redirect(url('categories'));
-
+// return redirect()->action([CategoryController::class,'all']);
 
     }
 
